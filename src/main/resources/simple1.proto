@@ -1,8 +1,0 @@
-  syntax = "proto3";
-
-  package ngk.devtools.anotherproto;
-
-  message Person1 {
-    string name = 1;
-    string lastname = 2;
-  }

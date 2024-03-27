@@ -49,7 +49,7 @@ public class UmlClass {
     @Override
     public String toString() {
         return String.format(
-                "class %s {\n\t%s \n}\n",
+                "class %s {\n\t%s\n}\n",
                 name,
                 fields.stream().map(UmlField::toString).collect(Collectors.joining(",\n\t"))
         );
