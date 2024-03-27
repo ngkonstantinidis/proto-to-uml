@@ -15,18 +15,32 @@ import ngk.devtools.proto.uml.domain.entities.proto.ProtoService;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * Implementation of the {@link ProtoParser} using the protostuff library
+ */
 public class ProtoParserImpl implements ProtoParser {
 
+    /**
+     * The context of the protostuff parser
+     */
     private final ProtoContext protoContext;
 
+    /**
+     * Constructor of the {@link ProtoParserImpl}
+     *
+     * @param pathToProtoFile The path to the proto file to be parsed
+     */
     public ProtoParserImpl(final @NonNull String pathToProtoFile) {
 
         final Injector injector = Guice.createInjector(new ParserModule());
         final Importer importer = injector.getInstance(Importer.class);
-        Path path = Path.of(pathToProtoFile);
+        final Path path = Path.of(pathToProtoFile);
         this.protoContext = importer.importFile(new LocalFileReader(path.getParent()), path.getFileName().toString());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ProtoMessage> getMessages() {
         return protoContext.getProto().getMessages().stream()
@@ -34,6 +48,12 @@ public class ProtoParserImpl implements ProtoParser {
                 .toList();
     }
 
+    /**
+     * Extract the fields of the proto message
+     *
+     * @param message The message from which the fields are extracted
+     * @return The list of {@link ProtoField}
+     */
     @NonNull
     private static List<ProtoField> extractFieldsFromMessage(final @NonNull Message message) {
 
@@ -43,6 +63,12 @@ public class ProtoParserImpl implements ProtoParser {
                 .toList();
     }
 
+    /**
+     * Cleanup the fully qualified name by removing the first dot as it is added by the parser
+     *
+     * @param packageName The name to be corrected
+     * @return The corrected fully qualified name
+     */
     @NonNull
     private static String cleanupPackage(final @NonNull String packageName) {
         return packageName.replaceFirst("\\.", "");
@@ -53,6 +79,9 @@ public class ProtoParserImpl implements ProtoParser {
         throw new RuntimeException("Not supported yet");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ProtoService> getServices() {
         throw new RuntimeException("Not supported yet");
