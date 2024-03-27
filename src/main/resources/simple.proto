@@ -1,0 +1,21 @@
+  syntax = "proto3";
+
+  import "simple1.proto";
+
+  package ngk.devtools.proto;
+
+
+  message Person {
+    string name = 1;
+    string lastname = 2;
+    ngk.devtools.anotherproto.Person1 person1 = 3;
+    Address address = 4;
+  }
+
+  message Address {
+    string country = 1;
+    string city = 2;
+    string street = 3;
+    string number = 4;
+    string zipCode = 5;
+  }
