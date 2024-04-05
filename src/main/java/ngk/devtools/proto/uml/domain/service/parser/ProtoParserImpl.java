@@ -59,7 +59,7 @@ public class ProtoParserImpl implements ProtoParser {
 
         return message.getFields()
                 .stream()
-                .map(it -> ProtoField.of(message.getName(), it.getName(), it.getTypeName(), cleanupPackage(it.getType().getFullyQualifiedName())))
+                .map(it -> ProtoField.of(message.getName(), it.getName(), it.getTypeName(), cleanupPackage(it.getType().getFullyQualifiedName()), it.isRepeated()))
                 .toList();
     }
 

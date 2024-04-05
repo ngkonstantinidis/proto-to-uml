@@ -51,6 +51,8 @@ public class ProtoMessage {
          */
         private String messageTypeFullyQualifiedName;
 
+        private boolean isRepeated;
+
         /**
          * Evaluates if the field is of primitive type by checking the {@link ProtoPrimitiveType}
          * enumeration

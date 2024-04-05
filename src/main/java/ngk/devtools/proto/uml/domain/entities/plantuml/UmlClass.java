@@ -35,7 +35,7 @@ public class UmlClass {
     public static UmlClass fromProtoMessage(final @NonNull ProtoMessage protoMessage) {
         final List<UmlField> fieldsList = protoMessage.getFields()
                 .stream()
-                .map(it -> UmlField.of(it.getName(), it.getType()))
+                .map(it -> UmlField.of(it.getName(), it.getType(), it.isRepeated()))
                 .toList();
 
         return UmlClass.of(protoMessage.getFullyQualifiedName(), fieldsList);
@@ -70,12 +70,17 @@ public class UmlClass {
          */
         private String type;
 
+        private boolean isList;
+
         /**
          * Generates the field code for the diagram
          *
          * @return The code for the UML diagram
          */
         public String toString() {
+            if (this.isList) {
+                return String.format("%s: List<%s>", name, type);
+            }
             return String.format("%s: %s", name, type);
         }
     }

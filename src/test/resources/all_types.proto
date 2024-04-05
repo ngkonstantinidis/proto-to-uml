@@ -1,0 +1,18 @@
+  syntax = "proto3";
+
+  package ngk.devtools.proto;
+
+
+  message Person {
+    string name = 1;
+    string lastname = 2;
+    repeated Address address = 3;
+  }
+
+  message Address {
+    string country = 1;
+    string city = 2;
+    string street = 3;
+    string number = 4;
+    string zipCode = 5;
+  }

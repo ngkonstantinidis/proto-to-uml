@@ -1,0 +1,16 @@
+@startuml
+class ngk.devtools.proto.Person {
+	name: string,
+	lastname: string,
+	address: List<Address>
+}
+class ngk.devtools.proto.Address {
+	country: string,
+	city: string,
+	street: string,
+	number: string,
+	zipCode: string
+}
+Person::address -> Address
+hide empty methods
+@enduml
