@@ -3,6 +3,11 @@ package ngk.devtools.proto.uml.domain.entities.proto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
+import org.antlr.v4.runtime.misc.Triple;
+import org.javatuples.Pair;
+import org.javatuples.Quartet;
+import org.javatuples.Triplet;
+import org.javatuples.Tuple;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,22 +50,61 @@ public class ProtoMessage {
         /**
          * The type of the field
          */
-        private String type;
+        private List<Pair<String, String>> type;
         /**
          * The full qualified name of the type
          */
-        private String messageTypeFullyQualifiedName;
-
+//        private String messageTypeFullyQualifiedName;
+        /**
+         * A flag to identify if the field is repeated,
+         * meaning that has many instances (List in Java)
+         * or not
+         */
         private boolean isRepeated;
 
-        /**
-         * Evaluates if the field is of primitive type by checking the {@link ProtoPrimitiveType}
-         * enumeration
-         *
-         * @return True if the type of the field is primitive, otherwise False
-         */
-        public boolean isPrimitive() {
-            return ProtoPrimitiveType.isPrimitive(type);
+        @NonNull
+        public static ProtoField of(final @NonNull String messageName,
+                                    final @NonNull String name,
+                                    final @NonNull String type,
+                                    final @NonNull String messageTypeFullyQualifiedName,
+                                    final boolean isRepeated) {
+
+            return ProtoField.of(
+                    messageName,
+                    name,
+                    List.of(Pair.with(type, messageTypeFullyQualifiedName)),
+                    isRepeated
+            );
+        }
+
+        @NonNull
+        public static ProtoField of(final @NonNull String messageName,
+                                    final @NonNull String name,
+                                    final @NonNull String keyType,
+                                    final @NonNull String keyTypeFullyQualifiedName,
+                                    final @NonNull String valueType,
+                                    final @NonNull String valueTypeFullyQualifiedName,
+                                    final boolean isRepeated) {
+
+            return ProtoField.of(
+                    messageName,
+                    name,
+                    List.of(
+                            Pair.with(keyType, keyTypeFullyQualifiedName),
+                            Pair.with(valueType, valueTypeFullyQualifiedName)
+                    ),
+                    isRepeated
+            );
+        }
+
+        public boolean isMap() {
+            return type.size() == 2 && isRepeated;
+        }
+
+        public List<Quartet<String, String, String, Boolean>> toTuple() {
+            return type.stream()
+                    .map(it -> Quartet.with(this.messageName, this.name, it.getValue0(), ProtoPrimitiveType.isPrimitive(it.getValue0())))
+                    .toList();
         }
     }
 

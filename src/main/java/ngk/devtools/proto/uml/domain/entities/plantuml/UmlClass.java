@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import ngk.devtools.proto.uml.domain.entities.proto.ProtoMessage;
+import org.checkerframework.checker.units.qual.N;
+import org.javatuples.Pair;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,10 +37,15 @@ public class UmlClass {
     public static UmlClass fromProtoMessage(final @NonNull ProtoMessage protoMessage) {
         final List<UmlField> fieldsList = protoMessage.getFields()
                 .stream()
-                .map(it -> UmlField.of(it.getName(), it.getType(), it.isRepeated()))
+                .map(it -> UmlField.of(it.getName(), fieldType(it.getType().stream().map(Pair::getValue0).toList()), it.isRepeated()))
                 .toList();
 
         return UmlClass.of(protoMessage.getFullyQualifiedName(), fieldsList);
+    }
+
+    @NonNull
+    private static String fieldType(final @NonNull List<String> fromProtoFieldType) {
+        return String.join(",", fromProtoFieldType);
     }
 
     /**
@@ -70,7 +77,7 @@ public class UmlClass {
          */
         private String type;
 
-        private boolean isList;
+        private boolean isCollection;
 
         /**
          * Generates the field code for the diagram
@@ -78,8 +85,10 @@ public class UmlClass {
          * @return The code for the UML diagram
          */
         public String toString() {
-            if (this.isList) {
+            if (this.isCollection && !type.contains(",")) {
                 return String.format("%s: List<%s>", name, type);
+            } else if (this.isCollection && type.contains(",")) {
+                return String.format("%s: Map<%s>", name, type);
             }
             return String.format("%s: %s", name, type);
         }

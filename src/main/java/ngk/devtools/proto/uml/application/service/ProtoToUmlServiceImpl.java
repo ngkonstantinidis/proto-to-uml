@@ -26,8 +26,9 @@ public class ProtoToUmlServiceImpl implements ProtoToUmlService {
         final List<UmlAssociation> plantUmlAssociations = protoParser.getMessages()
                 .stream()
                 .flatMap(it -> it.getFields().stream())
-                .filter(it -> !it.isPrimitive())
-                .map(it -> UmlAssociation.of(it.getMessageName(), it.getName(), it.getType()))
+                .flatMap(it -> it.toTuple().stream())
+                .filter(it -> !it.getValue3())
+                .map(it -> UmlAssociation.of(it.getValue0(), it.getValue1(), it.getValue2()))
                 .toList();
 
         final PlantUmlClassDiagram plantUmlClassDiagram = PlantUmlClassDiagram.of(plantUmlClasses, plantUmlAssociations);

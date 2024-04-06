@@ -2,7 +2,8 @@
 class ngk.devtools.proto.Person {
 	name: string,
 	lastname: string,
-	address: List<Address>
+	address: List<Address>,
+	addresses: Map<string,Address>
 }
 class ngk.devtools.proto.Address {
 	country: string,
@@ -12,5 +13,6 @@ class ngk.devtools.proto.Address {
 	zipCode: string
 }
 Person::address -> Address
+Person::addresses -> Address
 hide empty methods
 @enduml

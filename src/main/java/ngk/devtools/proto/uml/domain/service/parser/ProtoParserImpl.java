@@ -3,6 +3,7 @@ package ngk.devtools.proto.uml.domain.service.parser;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.protostuff.compiler.ParserModule;
+import io.protostuff.compiler.model.Field;
 import io.protostuff.compiler.model.Message;
 import io.protostuff.compiler.parser.Importer;
 import io.protostuff.compiler.parser.LocalFileReader;
@@ -11,6 +12,7 @@ import lombok.NonNull;
 import ngk.devtools.proto.uml.domain.entities.proto.ProtoMessage;
 import ngk.devtools.proto.uml.domain.entities.proto.ProtoMessage.ProtoField;
 import ngk.devtools.proto.uml.domain.entities.proto.ProtoService;
+import org.javatuples.Pair;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -59,8 +61,33 @@ public class ProtoParserImpl implements ProtoParser {
 
         return message.getFields()
                 .stream()
-                .map(it -> ProtoField.of(message.getName(), it.getName(), it.getTypeName(), cleanupPackage(it.getType().getFullyQualifiedName()), it.isRepeated()))
+                .map(it -> buildProtoField(message, it))
                 .toList();
+    }
+
+    private static ProtoField buildProtoField(final @NonNull Message message,
+                                              final @NonNull Field field) {
+
+
+        if (field.isMap()) {
+            List<Pair<String, String>> types = ((Message) field.getType()).getFields().stream().map(it -> Pair.with(it.getTypeName(), it.getType().getFullyQualifiedName())).toList();
+            return ProtoField.of(
+                    message.getName(),
+                    field.getName(),
+                    types.get(0).getValue0(),
+                    cleanupPackage(types.get(0).getValue1()),
+                    types.get(1).getValue0(),
+                    cleanupPackage(types.get(1).getValue1()),
+                    field.isRepeated()
+            );
+        }
+        return ProtoField.of(
+                message.getName(),
+                field.getName(),
+                field.getTypeName(),
+                cleanupPackage(field.getType().getFullyQualifiedName()),
+                field.isRepeated()
+        );
     }
 
     /**
