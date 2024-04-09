@@ -37,7 +37,7 @@ public class UmlClass {
     public static UmlClass fromProtoMessage(final @NonNull ProtoMessage protoMessage) {
         final List<UmlField> fieldsList = protoMessage.getFields()
                 .stream()
-                .map(it -> UmlField.of(it.getName(), fieldType(it.getType().stream().map(Pair::getValue0).toList()), it.isRepeated()))
+                .map(it -> UmlField.of(it.getName(), fieldType(it.getType().stream().map(Pair::getValue0).toList()), it.isRepeated(), it.isOneofPart()))
                 .toList();
 
         return UmlClass.of(protoMessage.getFullyQualifiedName(), fieldsList);
@@ -76,8 +76,25 @@ public class UmlClass {
          * The type of the field
          */
         private String type;
-
+        /**
+         * A flag to indicate that the field is a collection of
+         * items
+         */
         private boolean isCollection;
+        /**
+         * A flag to indicate that the field is part of oneOf
+         * structure
+         */
+        private boolean isOneOfPart;
+
+        /**
+         * Returns if the field is of Map type or not
+         *
+         * @return True if the field is map, otherwise False
+         */
+        private boolean isMap() {
+            return this.isCollection && type.contains(",");
+        }
 
         /**
          * Generates the field code for the diagram
@@ -86,11 +103,26 @@ public class UmlClass {
          */
         public String toString() {
             if (this.isCollection && !type.contains(",")) {
-                return String.format("%s: List<%s>", name, type);
-            } else if (this.isCollection && type.contains(",")) {
-                return String.format("%s: Map<%s>", name, type);
+                return addOneOfHighlighter(String.format("%s: List<%s>", name, type), isOneOfPart);
+            } else if (isMap()) {
+                return addOneOfHighlighter(String.format("%s: Map<%s>", name, type), isOneOfPart);
             }
-            return String.format("%s: %s", name, type);
+            return addOneOfHighlighter(String.format("%s: %s", name, type), isOneOfPart);
+        }
+
+        /**
+         * Highlight the field if it is part an oneOf structure in a Protocol Buffer
+         * message
+         *
+         * @param code        The diagram code
+         * @param isOneOfPart A flag to denote if it is part of oneOf
+         * @return The String that import as code in the method with a highlighter if it
+         * is part of a oneOf structure, otherwise it is returned as inserted
+         */
+        @NonNull
+        private static String addOneOfHighlighter(final @NonNull String code,
+                                                  final boolean isOneOfPart) {
+            return isOneOfPart ? "-> " + code : code;
         }
     }
 }

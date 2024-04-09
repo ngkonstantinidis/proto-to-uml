@@ -52,28 +52,28 @@ public class ProtoMessage {
          */
         private List<Pair<String, String>> type;
         /**
-         * The full qualified name of the type
-         */
-//        private String messageTypeFullyQualifiedName;
-        /**
          * A flag to identify if the field is repeated,
          * meaning that has many instances (List in Java)
          * or not
          */
         private boolean isRepeated;
 
+        private boolean isOneofPart;
+
         @NonNull
         public static ProtoField of(final @NonNull String messageName,
                                     final @NonNull String name,
                                     final @NonNull String type,
                                     final @NonNull String messageTypeFullyQualifiedName,
-                                    final boolean isRepeated) {
+                                    final boolean isRepeated,
+                                    final boolean isOneofPart) {
 
             return ProtoField.of(
                     messageName,
                     name,
                     List.of(Pair.with(type, messageTypeFullyQualifiedName)),
-                    isRepeated
+                    isRepeated,
+                    isOneofPart
             );
         }
 
@@ -84,7 +84,8 @@ public class ProtoMessage {
                                     final @NonNull String keyTypeFullyQualifiedName,
                                     final @NonNull String valueType,
                                     final @NonNull String valueTypeFullyQualifiedName,
-                                    final boolean isRepeated) {
+                                    final boolean isRepeated,
+                                    final boolean isOneofPart) {
 
             return ProtoField.of(
                     messageName,
@@ -93,10 +94,18 @@ public class ProtoMessage {
                             Pair.with(keyType, keyTypeFullyQualifiedName),
                             Pair.with(valueType, valueTypeFullyQualifiedName)
                     ),
-                    isRepeated
+                    isRepeated,
+                    isOneofPart
             );
         }
 
+        /**
+         * Returns if the field is of Map type or not
+         *
+         * @return True if the field is map, otherwise
+         * False
+         */
+        @Deprecated
         public boolean isMap() {
             return type.size() == 2 && isRepeated;
         }

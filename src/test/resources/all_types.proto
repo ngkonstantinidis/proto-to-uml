@@ -8,6 +8,10 @@
     string lastname = 2;
     repeated Address address = 3;
     map<string, Address> addresses = 4;
+    oneof oneof_name {
+      string afm = 5;
+      string amka = 6;
+    }
   }
 
   message Address {

@@ -78,7 +78,8 @@ public class ProtoParserImpl implements ProtoParser {
                     cleanupPackage(types.get(0).getValue1()),
                     types.get(1).getValue0(),
                     cleanupPackage(types.get(1).getValue1()),
-                    field.isRepeated()
+                    field.isRepeated(),
+                    field.isOneofPart()
             );
         }
         return ProtoField.of(
@@ -86,7 +87,8 @@ public class ProtoParserImpl implements ProtoParser {
                 field.getName(),
                 field.getTypeName(),
                 cleanupPackage(field.getType().getFullyQualifiedName()),
-                field.isRepeated()
+                field.isRepeated(),
+                field.isOneofPart()
         );
     }
 

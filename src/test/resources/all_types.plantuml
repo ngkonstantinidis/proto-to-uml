@@ -3,7 +3,9 @@ class ngk.devtools.proto.Person {
 	name: string,
 	lastname: string,
 	address: List<Address>,
-	addresses: Map<string,Address>
+	addresses: Map<string,Address>,
+	-> afm: string,
+	-> amka: string
 }
 class ngk.devtools.proto.Address {
 	country: string,
