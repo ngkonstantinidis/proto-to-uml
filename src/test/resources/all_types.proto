@@ -12,6 +12,7 @@
       string afm = 5;
       string amka = 6;
     }
+    Payment paymentMethod = 7;
   }
 
   message Address {
@@ -20,4 +21,11 @@
     string street = 3;
     string number = 4;
     string zipCode = 5;
+  }
+
+  enum Payment{
+    CASH = 0;
+    CREDIT_CARD = 1;
+    DEBIT_CARD = 2;
+    APP = 3;
   }

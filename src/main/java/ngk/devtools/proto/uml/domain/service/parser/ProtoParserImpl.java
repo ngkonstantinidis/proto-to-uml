@@ -3,6 +3,8 @@ package ngk.devtools.proto.uml.domain.service.parser;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.protostuff.compiler.ParserModule;
+import io.protostuff.compiler.model.Enum;
+import io.protostuff.compiler.model.EnumConstant;
 import io.protostuff.compiler.model.Field;
 import io.protostuff.compiler.model.Message;
 import io.protostuff.compiler.parser.Importer;
@@ -16,6 +18,7 @@ import org.javatuples.Pair;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Implementation of the {@link ProtoParser} using the protostuff library
@@ -45,9 +48,15 @@ public class ProtoParserImpl implements ProtoParser {
      */
     @Override
     public List<ProtoMessage> getMessages() {
-        return protoContext.getProto().getMessages().stream()
-                .map(it -> ProtoMessage.of(it.getName(), cleanupPackage(it.getFullyQualifiedName()), extractFieldsFromMessage(it)))
+        final List<ProtoMessage> enums = protoContext.getProto().getEnums().stream()
+                .map(it -> ProtoMessage.of(it.getName(), cleanupPackage(it.getFullyQualifiedName()), extractEnumConstant(it), true))
                 .toList();
+
+        final List<ProtoMessage> messages = protoContext.getProto().getMessages().stream()
+                .map(it -> ProtoMessage.of(it.getName(), cleanupPackage(it.getFullyQualifiedName()), extractFieldsFromMessage(it), false))
+                .toList();
+
+        return Stream.concat(enums.stream(), messages.stream()).toList();
     }
 
     /**
@@ -63,6 +72,23 @@ public class ProtoParserImpl implements ProtoParser {
                 .stream()
                 .map(it -> buildProtoField(message, it))
                 .toList();
+    }
+
+    @NonNull
+    private static List<ProtoField> extractEnumConstant(final @NonNull Enum enumeration) {
+
+        return enumeration.getConstants()
+                .stream()
+                .map(it -> buildProtoFieldForEnum(enumeration, it))
+                .toList();
+    }
+
+    private static ProtoField buildProtoFieldForEnum(final @NonNull Enum message,
+                                                     final @NonNull EnumConstant field) {
+        return ProtoField.of(
+                message.getName(),
+                field.getName()
+        );
     }
 
     private static ProtoField buildProtoField(final @NonNull Message message,

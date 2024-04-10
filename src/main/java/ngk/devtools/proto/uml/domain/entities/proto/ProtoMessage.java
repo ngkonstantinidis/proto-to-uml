@@ -31,6 +31,11 @@ public class ProtoMessage {
      * A list of the message fields
      */
     private List<ProtoField> fields;
+    /**
+     * Flag to indicate if the object refers to
+     * an enumeration
+     */
+    private boolean isEnum;
 
     /**
      * Represents a field in a proto message in the proto file
@@ -74,6 +79,19 @@ public class ProtoMessage {
                     List.of(Pair.with(type, messageTypeFullyQualifiedName)),
                     isRepeated,
                     isOneofPart
+            );
+        }
+
+        @NonNull
+        public static ProtoField of(final @NonNull String messageName,
+                                    final @NonNull String name) {
+
+            return ProtoField.of(
+                    messageName,
+                    name,
+                    List.of(),
+                    false,
+                    false
             );
         }
 

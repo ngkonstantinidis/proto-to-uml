@@ -26,6 +26,11 @@ public class UmlClass {
      * The list of the fields in the class object
      */
     private List<UmlField> fields;
+    /**
+     * Flag to indicate if the object refers to
+     * an enumeration
+     */
+    private boolean isEnum;
 
     /**
      * Generates a class for the UML diagram
@@ -40,7 +45,7 @@ public class UmlClass {
                 .map(it -> UmlField.of(it.getName(), fieldType(it.getType().stream().map(Pair::getValue0).toList()), it.isRepeated(), it.isOneofPart()))
                 .toList();
 
-        return UmlClass.of(protoMessage.getFullyQualifiedName(), fieldsList);
+        return UmlClass.of(protoMessage.getFullyQualifiedName(), fieldsList, protoMessage.isEnum());
     }
 
     @NonNull
@@ -56,7 +61,7 @@ public class UmlClass {
     @Override
     public String toString() {
         return String.format(
-                "class %s {\n\t%s\n}\n",
+                this.isEnum ? "enum %s {\n\t%s\n}\n" : "class %s {\n\t%s\n}\n",
                 name,
                 fields.stream().map(UmlField::toString).collect(Collectors.joining(",\n\t"))
         );
@@ -88,12 +93,22 @@ public class UmlClass {
         private boolean isOneOfPart;
 
         /**
-         * Returns if the field is of Map type or not
+         * Evaluates if the field is of Map type or not
          *
          * @return True if the field is map, otherwise False
          */
         private boolean isMap() {
             return this.isCollection && type.contains(",");
+        }
+
+        /**
+         * Evaluates if the field is Enumeration Constant or not
+         *
+         * @return True if the field is Enumeration Constant,
+         * otherwise False
+         */
+        private boolean isEnumConstant() {
+            return this.type.isEmpty();
         }
 
         /**
@@ -106,6 +121,8 @@ public class UmlClass {
                 return addOneOfHighlighter(String.format("%s: List<%s>", name, type), isOneOfPart);
             } else if (isMap()) {
                 return addOneOfHighlighter(String.format("%s: Map<%s>", name, type), isOneOfPart);
+            } else if (isEnumConstant()) {
+                return addOneOfHighlighter(String.format("%s", name), isOneOfPart);
             }
             return addOneOfHighlighter(String.format("%s: %s", name, type), isOneOfPart);
         }
@@ -122,7 +139,7 @@ public class UmlClass {
         @NonNull
         private static String addOneOfHighlighter(final @NonNull String code,
                                                   final boolean isOneOfPart) {
-            return isOneOfPart ? "-> " + code : code;
+            return isOneOfPart ? "> " + code : code;
         }
     }
 }
