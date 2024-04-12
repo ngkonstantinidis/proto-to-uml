@@ -4,9 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.protostuff.compiler.ParserModule;
 import io.protostuff.compiler.model.Enum;
-import io.protostuff.compiler.model.EnumConstant;
-import io.protostuff.compiler.model.Field;
-import io.protostuff.compiler.model.Message;
+import io.protostuff.compiler.model.*;
 import io.protostuff.compiler.parser.Importer;
 import io.protostuff.compiler.parser.LocalFileReader;
 import io.protostuff.compiler.parser.ProtoContext;
@@ -14,6 +12,7 @@ import lombok.NonNull;
 import ngk.devtools.proto.uml.domain.entities.proto.ProtoMessage;
 import ngk.devtools.proto.uml.domain.entities.proto.ProtoMessage.ProtoField;
 import ngk.devtools.proto.uml.domain.entities.proto.ProtoService;
+import ngk.devtools.proto.uml.domain.entities.proto.ProtoService.ProtoMethod;
 import org.javatuples.Pair;
 
 import java.nio.file.Path;
@@ -118,17 +117,6 @@ public class ProtoParserImpl implements ProtoParser {
         );
     }
 
-    /**
-     * Cleanup the fully qualified name by removing the first dot as it is added by the parser
-     *
-     * @param packageName The name to be corrected
-     * @return The corrected fully qualified name
-     */
-    @NonNull
-    private static String cleanupPackage(final @NonNull String packageName) {
-        return packageName.replaceFirst("\\.", "");
-    }
-
     @Override
     public List<ProtoField> getFieldsForMessage(String Message) {
         throw new RuntimeException("Not supported yet");
@@ -139,6 +127,25 @@ public class ProtoParserImpl implements ProtoParser {
      */
     @Override
     public List<ProtoService> getServices() {
-        throw new RuntimeException("Not supported yet");
+        return protoContext.getProto().getServices().stream()
+                .map(it -> ProtoService.of(it.getName(), cleanupPackage(it.getFullyQualifiedName()), extractProtoMethods(it)))
+                .toList();
+    }
+
+    private static List<ProtoMethod> extractProtoMethods(final @NonNull Service service) {
+        return service.getMethods().stream()
+                .map(it -> ProtoMethod.of(service.getName(), it.getName(), Pair.with(it.getArgTypeName(), it.getArgType().getFullyQualifiedName()), Pair.with(it.getReturnTypeName(), it.getReturnType().getFullyQualifiedName())))
+                .toList();
+    }
+
+    /**
+     * Cleanup the fully qualified name by removing the first dot as it is added by the parser
+     *
+     * @param packageName The name to be corrected
+     * @return The corrected fully qualified name
+     */
+    @NonNull
+    private static String cleanupPackage(final @NonNull String packageName) {
+        return packageName.replaceFirst("\\.", "");
     }
 }

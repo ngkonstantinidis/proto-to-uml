@@ -29,3 +29,7 @@
     DEBIT_CARD = 2;
     APP = 3;
   }
+
+  service ProductService {
+    rpc GetPersonAddress (Person) returns (Address) {}
+  }

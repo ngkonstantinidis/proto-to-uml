@@ -33,6 +33,7 @@ public class PlantUmlClassDiagram {
         classes.forEach(it -> stringBuilder.append(it.toString()));
         associations.forEach(it -> stringBuilder.append(it.toString()));
         stringBuilder.append("hide empty methods\n");
+        stringBuilder.append("hide empty fields\n");
         stringBuilder.append("@enduml");
 
         return stringBuilder.toString();

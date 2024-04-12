@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import ngk.devtools.proto.uml.domain.entities.proto.ProtoMessage;
-import org.checkerframework.checker.units.qual.N;
+import ngk.devtools.proto.uml.domain.entities.proto.ProtoService;
 import org.javatuples.Pair;
 
 import java.util.List;
@@ -27,6 +27,10 @@ public class UmlClass {
      */
     private List<UmlField> fields;
     /**
+     * The list of the methods in the class object
+     */
+    private List<UmlMethod> methods;
+    /**
      * Flag to indicate if the object refers to
      * an enumeration
      */
@@ -45,7 +49,23 @@ public class UmlClass {
                 .map(it -> UmlField.of(it.getName(), fieldType(it.getType().stream().map(Pair::getValue0).toList()), it.isRepeated(), it.isOneofPart()))
                 .toList();
 
-        return UmlClass.of(protoMessage.getFullyQualifiedName(), fieldsList, protoMessage.isEnum());
+        return UmlClass.of(protoMessage.getFullyQualifiedName(), fieldsList, List.of(), protoMessage.isEnum());
+    }
+
+    /**
+     * Generates a class for the UML diagram
+     *
+     * @param protoService The proto service from which a class object is generated
+     * @return An initialized {@link UmlClass}
+     */
+    @NonNull
+    public static UmlClass fromProtoService(final @NonNull ProtoService protoService) {
+        final List<UmlMethod> methodList = protoService.getMethods()
+                .stream()
+                .map(it -> UmlMethod.of(it.getName(), List.of(it.getInputParamType().getValue0()), List.of(it.getReturnType().getValue0())))
+                .toList();
+
+        return UmlClass.of(protoService.getFullyQualifiedName(), List.of(), methodList, false);
     }
 
     @NonNull
@@ -60,10 +80,14 @@ public class UmlClass {
      */
     @Override
     public String toString() {
+
+
         return String.format(
                 this.isEnum ? "enum %s {\n\t%s\n}\n" : "class %s {\n\t%s\n}\n",
                 name,
-                fields.stream().map(UmlField::toString).collect(Collectors.joining(",\n\t"))
+                methods.isEmpty() ?
+                        fields.stream().map(UmlField::toString).collect(Collectors.joining(",\n\t")) :
+                        methods.stream().map(UmlMethod::toString).collect(Collectors.joining(",\n\t"))
         );
     }
 
@@ -140,6 +164,35 @@ public class UmlClass {
         private static String addOneOfHighlighter(final @NonNull String code,
                                                   final boolean isOneOfPart) {
             return isOneOfPart ? "> " + code : code;
+        }
+    }
+
+    /**
+     * Represents a method in a UML diagram
+     */
+    @AllArgsConstructor(staticName = "of")
+    private static class UmlMethod {
+        /**
+         * The name of the method
+         */
+        private String name;
+        /**
+         * The list of the types that the input parameters to the
+         * method have
+         */
+        private List<String> inputParams;
+        /**
+         * The list of the types that the return value of the method have
+         */
+        private List<String> returnType;
+
+        /**
+         * Generates the method code for the diagram
+         *
+         * @return The code for the UML diagram
+         */
+        public String toString() {
+            return String.format("%s(%s): %s", name, inputParams.stream().collect(Collectors.joining(",")), returnType.get(0));
         }
     }
 }

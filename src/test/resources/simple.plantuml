@@ -13,4 +13,5 @@ class ngk.devtools.proto.Address {
 }
 Person::address -> Address
 hide empty methods
+hide empty fields
 @enduml

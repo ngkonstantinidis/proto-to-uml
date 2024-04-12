@@ -21,8 +21,14 @@ class ngk.devtools.proto.Address {
 	number: string,
 	zipCode: string
 }
+class ngk.devtools.proto.ProductService {
+	GetPersonAddress(Person): Address
+}
 Person::address -> Address
 Person::addresses -> Address
 Person::paymentMethod -> Payment
+ProductService::GetPersonAddress -> Person
+ProductService::GetPersonAddress -> Address
 hide empty methods
+hide empty fields
 @enduml
