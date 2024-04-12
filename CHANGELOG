@@ -1,0 +1,30 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+
+## [Unreleased]
+
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+
+## [0.1.0] - 2024-04-12
+
+### Added
+
+- Initial algorithm implementation (PTUML-2).
+- Support to repeated (PTUML-11)
+- Support to map (PTUML-9)
+- Support to oneOf (PTUML-10)
+- Support to enumerations (PTUML-8)
+- Support to services (PTUML-4)
+
+
+[unreleased]: https://gitlab.com/ngk-dev-tools/proto-to-uml/-/tags/v0.1.0...HEAD
+[0.1.0]: https://gitlab.com/ngk-dev-tools/proto-to-uml/-/tags/v0.1.0
