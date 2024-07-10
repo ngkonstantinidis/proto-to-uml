@@ -1,4 +1,5 @@
 # Proto To UML
+![GitHub Release](https://img.shields.io/github/v/release/ngkonstantinidis/proto-to-uml)
 
 A tool that visualize the proto files (Protocol Buffers Definition) to a UML diagram.
 
