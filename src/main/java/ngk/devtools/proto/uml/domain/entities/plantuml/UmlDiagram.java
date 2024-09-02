@@ -1,27 +1,15 @@
-package ngk.devtools.proto.uml.application.service;
+package ngk.devtools.proto.uml.domain.entities.plantuml;
 
 import lombok.NonNull;
-import ngk.devtools.proto.uml.domain.entities.plantuml.UmlAssociation;
-import ngk.devtools.proto.uml.domain.entities.plantuml.UmlClass;
-import ngk.devtools.proto.uml.domain.service.parser.ProtoParserImpl;
-import ngk.devtools.proto.uml.domain.service.plantuml.PlantUmlClassDiagram;
+import ngk.devtools.proto.uml.domain.service.parser.ProtoParser;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-/**
- * The Implementation of the {@link ProtoToUmlService} service
- */
-public class ProtoToUmlServiceImpl implements ProtoToUmlService {
+public record UmlDiagram(List<UmlClass> classes, List<UmlAssociation> associations) {
 
-    /**
-     * {@inheritDoc}
-     */
-    public String generatePlantUmlDiagramCode(final @NonNull String pathToProtoFile) {
+    public static UmlDiagram fromParser(final @NonNull ProtoParser protoParser) {
 
-        final ProtoParserImpl protoParser = new ProtoParserImpl(pathToProtoFile);
-
-        //TODO - replace the code with the UML Diagram class
         final List<UmlClass> plantUmlClasses = protoParser.getMessages().stream()
                 .map(UmlClass::fromProtoMessage)
                 .toList();
@@ -45,10 +33,9 @@ public class ProtoToUmlServiceImpl implements ProtoToUmlService {
                 .map(it -> UmlAssociation.of(it.getValue0(), it.getValue1(), it.getValue2()))
                 .toList();
 
-        final PlantUmlClassDiagram plantUmlClassDiagram = PlantUmlClassDiagram.of(
+        return new UmlDiagram(
                 Stream.concat(plantUmlClasses.stream(), plantUmlClassesForService.stream()).toList(),
                 Stream.concat(plantUmlAssociations.stream(), plantUmlAssociationsForService.stream()).toList()
         );
-        return plantUmlClassDiagram.toString();
     }
 }
