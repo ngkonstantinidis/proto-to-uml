@@ -1,4 +1,4 @@
-package ngk.devtools.proto.uml.application.service;
+package ngk.devtools.proto.uml.service;
 
 import lombok.NonNull;
 

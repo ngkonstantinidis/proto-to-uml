@@ -70,7 +70,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>ngk.devtools.proto.uml.ProtoToUmlApp</mainClass>
+                                    <mainClass>ngk.devtools.proto.uml.application.ProtoToUmlApp</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

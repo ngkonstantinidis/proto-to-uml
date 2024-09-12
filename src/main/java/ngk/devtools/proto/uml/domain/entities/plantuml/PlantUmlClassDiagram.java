@@ -1,6 +1,6 @@
-package ngk.devtools.proto.uml.domain.service.plantuml;
+package ngk.devtools.proto.uml.domain.entities.plantuml;
 
-import ngk.devtools.proto.uml.domain.entities.plantuml.UmlDiagram;
+import ngk.devtools.proto.uml.domain.entities.uml.UmlDiagram;
 
 /**
  * The UML diagram in PlantUML format

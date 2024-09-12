@@ -2,6 +2,8 @@ package ngk.devtools.proto.uml.application.service;
 
 import com.google.common.io.Resources;
 import lombok.NonNull;
+import ngk.devtools.proto.uml.service.ProtoToUmlService;
+import ngk.devtools.proto.uml.service.ProtoToUmlServiceImpl;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

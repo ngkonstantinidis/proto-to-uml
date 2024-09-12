@@ -1,4 +1,4 @@
-package ngk.devtools.proto.uml.domain.entities.plantuml;
+package ngk.devtools.proto.uml.domain.entities.uml;
 
 import lombok.NonNull;
 import ngk.devtools.proto.uml.domain.service.parser.ProtoParser;

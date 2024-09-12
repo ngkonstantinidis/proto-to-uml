@@ -1,8 +1,8 @@
-package ngk.devtools.proto.uml;
+package ngk.devtools.proto.uml.application;
 
 
-import ngk.devtools.proto.uml.application.service.ProtoToUmlService;
-import ngk.devtools.proto.uml.application.service.ProtoToUmlServiceImpl;
+import ngk.devtools.proto.uml.service.ProtoToUmlService;
+import ngk.devtools.proto.uml.service.ProtoToUmlServiceImpl;
 
 public class ProtoToUmlApp {
 

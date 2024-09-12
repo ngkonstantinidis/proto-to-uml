@@ -1,9 +1,9 @@
-package ngk.devtools.proto.uml.application.service;
+package ngk.devtools.proto.uml.service;
 
 import lombok.NonNull;
-import ngk.devtools.proto.uml.domain.entities.plantuml.UmlDiagram;
+import ngk.devtools.proto.uml.domain.entities.uml.UmlDiagram;
 import ngk.devtools.proto.uml.domain.service.parser.ProtoParserImpl;
-import ngk.devtools.proto.uml.domain.service.plantuml.PlantUmlClassDiagram;
+import ngk.devtools.proto.uml.domain.entities.plantuml.PlantUmlClassDiagram;
 
 /**
  * The Implementation of the {@link ProtoToUmlService} service
